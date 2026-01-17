@@ -1,0 +1,181 @@
+<div class="dashboard">
+  <!-- Page Header -->
+  <div class="dashboard-header">
+    <div>
+      <h1>Tableau de bord</h1>
+      <p class="subtitle">Vue d'ensemble de votre activité</p>
+    </div>
+  </div>
+
+  <!-- KPI Cards -->
+  <div class="kpi-row">
+    <mat-card class="kpi-card" (click)="navigateTo('/equipements')">
+      <div class="kpi-icon-wrap bg-blue">
+        <mat-icon>inventory_2</mat-icon>
+      </div>
+      <div class="kpi-content">
+        <span class="kpi-value">{{ totalEquipements() }}</span>
+        <span class="kpi-label">Équipements</span>
+      </div>
+    </mat-card>
+
+    <mat-card class="kpi-card">
+      <div class="kpi-icon-wrap bg-green">
+        <mat-icon>check_circle</mat-icon>
+      </div>
+      <div class="kpi-content">
+        <span class="kpi-value">{{ availableEquipements() }}</span>
+        <span class="kpi-label">Disponibles</span>
+        <span class="kpi-badge green">{{ availabilityRate() }}%</span>
+      </div>
+    </mat-card>
+
+    <mat-card class="kpi-card" (click)="navigateTo('/demands')">
+      <div class="kpi-icon-wrap bg-orange">
+        <mat-icon>assignment</mat-icon>
+      </div>
+      <div class="kpi-content">
+        <span class="kpi-value">{{ totalDemands() }}</span>
+        <span class="kpi-label">Demandes</span>
+      </div>
+    </mat-card>
+
+    <mat-card class="kpi-card">
+      <div class="kpi-icon-wrap bg-purple">
+        <mat-icon>sync</mat-icon>
+      </div>
+      <div class="kpi-content">
+        <span class="kpi-value">{{ activeRentals().length }}</span>
+        <span class="kpi-label">Locations en cours</span>
+      </div>
+    </mat-card>
+
+    <mat-card class="kpi-card" [class.alert]="expiringRentals().length > 0">
+      <div class="kpi-icon-wrap bg-red">
+        <mat-icon>warning</mat-icon>
+      </div>
+      <div class="kpi-content">
+        <span class="kpi-value">{{ expiringRentals().length }}</span>
+        <span class="kpi-label">Expirent sous 7j</span>
+      </div>
+    </mat-card>
+  </div>
+
+  <!-- Main Grid -->
+  <div class="dashboard-grid">
+
+    <!-- Demand Status Breakdown -->
+    <mat-card class="grid-card status-card">
+      <mat-card-header>
+        <mat-icon class="card-icon">pie_chart</mat-icon>
+        <mat-card-title>Répartition des demandes</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="status-bars">
+          @for (s of statusCounts(); track s.value) {
+            <div class="status-bar-row">
+              <div class="status-bar-label">
+                <span class="status-dot" [style.background]="s.color"></span>
+                <span>{{ s.label }}</span>
+              </div>
+              <div class="status-bar-track">
+                <div class="status-bar-fill"
+                     [style.width.%]="totalDemands() > 0 ? (s.count / totalDemands()) * 100 : 0"
+                     [style.background]="s.color">
+                </div>
+              </div>
+              <span class="status-bar-count">{{ s.count }}</span>
+            </div>
+          }
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Equipment by Category -->
+    <mat-card class="grid-card categories-card">
+      <mat-card-header>
+        <mat-icon class="card-icon">category</mat-icon>
+        <mat-card-title>Équipements par catégorie</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="categories-list">
+          @for (cat of categoriesBreakdown(); track cat.name) {
+            <div class="category-row">
+              <span class="category-name">{{ cat.name }}</span>
+              <div class="category-bar-track">
+                <div class="category-bar-fill"
+                     [style.width.%]="totalEquipements() > 0 ? (cat.count / totalEquipements()) * 100 : 0">
+                </div>
+              </div>
+              <span class="category-count">{{ cat.count }}</span>
+            </div>
+          }
+          @empty {
+            <div class="empty-message">Aucun équipement enregistré</div>
+          }
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Monthly Turnover -->
+    <mat-card class="grid-card turnover-card">
+      <mat-card-header>
+        <mat-icon class="card-icon">trending_up</mat-icon>
+        <mat-card-title>Chiffre d'affaires mensuel</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="turnover-chart">
+          @for (m of monthlyTurnover(); track m.month + m.year) {
+            <div class="turnover-bar-col"
+                 [matTooltip]="m.month + ' ' + m.year + ': ' + m.total + ' MAD'">
+              <div class="turnover-bar"
+                   [style.height.%]="(m.total / maxTurnover()) * 100">
+              </div>
+              <span class="turnover-amount">{{ m.total | number:'1.0-0' }}</span>
+              <span class="turnover-label">{{ m.month.substring(0, 3) }}</span>
+            </div>
+          }
+          @empty {
+            <div class="empty-message">Aucune donnée de chiffre d'affaires</div>
+          }
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Active Rentals / Rent Periods -->
+    <mat-card class="grid-card rentals-card">
+      <mat-card-header>
+        <mat-icon class="card-icon">date_range</mat-icon>
+        <mat-card-title>Périodes de location en cours</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="rentals-list">
+          @for (r of activeRentals(); track r.id) {
+            <div class="rental-row">
+              <div class="rental-info">
+                <span class="rental-equip">{{ $any(r).equipementDto?.marque || 'Équipement #' + r.idEquipement }}</span>
+                <span class="rental-client">{{ r.nomComplet }}</span>
+              </div>
+              <div class="rental-dates">
+                <mat-icon class="small-icon">calendar_today</mat-icon>
+                <span>{{ r.dateDebut | date:'dd/MM' }} → {{ r.dateFin | date:'dd/MM/yyyy' }}</span>
+              </div>
+              <div class="rental-progress">
+                <div class="progress-track">
+                  <div class="progress-fill" [style.width.%]="getRentalProgress(r)"></div>
+                </div>
+                <span class="rental-days">{{ getRentalDays(r) }}j</span>
+              </div>
+            </div>
+          }
+          @empty {
+            <div class="empty-message">
+              <mat-icon>event_available</mat-icon>
+              <span>Aucune location en cours</span>
+            </div>
+          }
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

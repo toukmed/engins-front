@@ -1,0 +1,164 @@
+<div class="dialog-header">
+  <div class="header-icon">
+    <mat-icon>{{ isEditMode ? 'edit' : 'add_circle' }}</mat-icon>
+  </div>
+  <div class="header-text">
+    <h2>{{ isEditMode ? 'Modifier l\'équipement' : 'Nouvel équipement' }}</h2>
+    <p>{{ isEditMode ? 'Mettre à jour les informations de l\'équipement' : 'Remplissez les informations pour ajouter un équipement' }}</p>
+  </div>
+</div>
+
+<mat-dialog-content>
+  <form [formGroup]="equipementForm()" (ngSubmit)="onSubmit()">
+
+    <!-- Section: Informations Générales -->
+    <div class="form-section">
+      <div class="section-title">
+        <mat-icon>info</mat-icon>
+        <span>Informations Générales</span>
+      </div>
+
+      <div class="form-row">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Marque</mat-label>
+          <mat-icon matPrefix>directions_car</mat-icon>
+          <input matInput formControlName="marque" required>
+          @if (equipementForm().get('marque')?.hasError('required')) {
+            <mat-error>Marque est obligatoire</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Modèle</mat-label>
+          <mat-icon matPrefix>precision_manufacturing</mat-icon>
+          <input matInput formControlName="model" required>
+          @if (equipementForm().get('model')?.hasError('required')) {
+            <mat-error>Modèle est obligatoire</mat-error>
+          }
+        </mat-form-field>
+      </div>
+
+      <div class="form-row">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Matricule</mat-label>
+          <mat-icon matPrefix>confirmation_number</mat-icon>
+          <input matInput formControlName="matricule" required>
+          @if (equipementForm().get('matricule')?.hasError('required')) {
+            <mat-error>Matricule est obligatoire</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Catégorie</mat-label>
+          <mat-icon matPrefix>category</mat-icon>
+          <input matInput formControlName="categorie" required>
+          @if (equipementForm().get('categorie')?.hasError('required')) {
+            <mat-error>Catégorie est obligatoire</mat-error>
+          }
+        </mat-form-field>
+      </div>
+    </div>
+
+    <!-- Section: Tarification & Localisation -->
+    <div class="form-section">
+      <div class="section-title">
+        <mat-icon>payments</mat-icon>
+        <span>Tarification & Localisation</span>
+      </div>
+
+      <div class="form-row">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Tarif Journalier</mat-label>
+          <mat-icon matPrefix>attach_money</mat-icon>
+          <input matInput type="number" formControlName="prixJournalier" required>
+          <span matTextSuffix>MAD/jour</span>
+          @if (equipementForm().get('prixJournalier')?.hasError('required')) {
+            <mat-error>Tarif est obligatoire</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Ville</mat-label>
+          <mat-icon matPrefix>location_city</mat-icon>
+          <input matInput formControlName="ville" required>
+          @if (equipementForm().get('ville')?.hasError('required')) {
+            <mat-error>Ville est obligatoire</mat-error>
+          }
+        </mat-form-field>
+      </div>
+    </div>
+
+    <!-- Section: Image -->
+    <div class="form-section">
+      <div class="section-title">
+        <mat-icon>image</mat-icon>
+        <span>Image de l'équipement</span>
+      </div>
+
+      <div class="upload-zone" (click)="fileInput.click()">
+        <input #fileInput type="file" accept="image/*" (change)="onFileSelected($event)" style="display: none;">
+        @if (imagePreview) {
+          <div class="image-preview">
+            <img [src]="imagePreview" alt="Aperçu de l'image">
+            <div class="preview-overlay">
+              <mat-icon>edit</mat-icon>
+              <span>Changer l'image</span>
+            </div>
+          </div>
+        } @else {
+          <div class="upload-placeholder">
+            <mat-icon>cloud_upload</mat-icon>
+            <span class="upload-text">Cliquez pour importer une image</span>
+            <span class="upload-hint">JPG, JPEG ou PNG</span>
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- Section: Détails -->
+    <div class="form-section">
+      <div class="section-title">
+        <mat-icon>description</mat-icon>
+        <span>Détails</span>
+      </div>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Description</mat-label>
+        <textarea matInput formControlName="description" rows="4" placeholder="Décrivez l'équipement..."></textarea>
+      </mat-form-field>
+
+      <div class="form-row">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>ID Propriétaire</mat-label>
+          <mat-icon matPrefix>person</mat-icon>
+          <input matInput type="number" formControlName="idProprietaire" required>
+          @if (equipementForm().get('idProprietaire')?.hasError('required')) {
+            <mat-error>ID Propriétaire est obligatoire</mat-error>
+          }
+        </mat-form-field>
+
+        <div class="toggle-field full-width">
+          <div class="toggle-content">
+            <div class="toggle-label">
+              <mat-icon>check_circle</mat-icon>
+              <span>Disponible</span>
+            </div>
+            <mat-slide-toggle formControlName="disponible" color="primary"></mat-slide-toggle>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-stroked-button type="button" (click)="closeDialog()">
+    <mat-icon>close</mat-icon>
+    Annuler
+  </button>
+  <button mat-flat-button color="primary" type="button" (click)="onSubmit()" [disabled]="equipementForm().invalid">
+    <mat-icon>{{ isEditMode ? 'save' : 'add' }}</mat-icon>
+    {{ isEditMode ? 'Enregistrer' : 'Ajouter' }}
+  </button>
+</mat-dialog-actions>

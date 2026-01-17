@@ -1,0 +1,127 @@
+<div class="dialog-header">
+  <div class="header-icon">
+    <mat-icon>request_quote</mat-icon>
+  </div>
+  <div class="header-text">
+    <h2>Demander un Devis</h2>
+    <p>Remplissez les informations pour demander un devis</p>
+  </div>
+</div>
+
+<mat-dialog-content>
+  <form [formGroup]="devisForm">
+
+    <!-- Section: Informations Personnelles -->
+    <div class="form-section">
+      <div class="section-title">
+        <mat-icon>person</mat-icon>
+        <span>Informations Personnelles</span>
+      </div>
+
+      <div class="form-row">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Nom Complet</mat-label>
+          <mat-icon matPrefix>person</mat-icon>
+          <input matInput formControlName="nomComplet" required>
+          @if (devisForm.get('nomComplet')?.hasError('required') && devisForm.get('nomComplet')?.touched) {
+            <mat-error>Nom complet est obligatoire</mat-error>
+          }
+          @if (devisForm.get('nomComplet')?.hasError('minlength')) {
+            <mat-error>Le nom doit contenir au moins 3 caractères</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Téléphone</mat-label>
+          <mat-icon matPrefix>phone</mat-icon>
+          <input matInput formControlName="telephone" placeholder="0612345678" required>
+          @if (devisForm.get('telephone')?.hasError('required') && devisForm.get('telephone')?.touched) {
+            <mat-error>Téléphone est obligatoire</mat-error>
+          }
+          @if (devisForm.get('telephone')?.hasError('pattern')) {
+            <mat-error>Numéro invalide (10 chiffres requis)</mat-error>
+          }
+        </mat-form-field>
+      </div>
+
+      <div class="form-row">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Nom Entreprise</mat-label>
+          <mat-icon matPrefix>business</mat-icon>
+          <input matInput formControlName="nomEntreprise">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Email</mat-label>
+          <mat-icon matPrefix>email</mat-icon>
+          <input matInput formControlName="email" placeholder="exemple@domaine.com">
+        </mat-form-field>
+      </div>
+    </div>
+
+    <!-- Section: Période & Localisation -->
+    <div class="form-section">
+      <div class="section-title">
+        <mat-icon>date_range</mat-icon>
+        <span>Période & Localisation</span>
+      </div>
+
+      <div class="form-row">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Période</mat-label>
+          <mat-date-range-input [formGroup]="devisForm" [rangePicker]="picker" [min]="minDate">
+            <input matStartDate formControlName="dateDebut" placeholder="Date début">
+            <input matEndDate formControlName="dateFin" placeholder="Date fin">
+          </mat-date-range-input>
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-date-range-picker #picker></mat-date-range-picker>
+          @if (devisForm.get('dateDebut')?.hasError('required') && devisForm.get('dateDebut')?.touched) {
+            <mat-error>Date de début est obligatoire</mat-error>
+          }
+          @if (devisForm.get('dateFin')?.hasError('required') && devisForm.get('dateFin')?.touched) {
+            <mat-error>Date de fin est obligatoire</mat-error>
+          }
+        </mat-form-field>
+      </div>
+
+      <div class="form-row">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Ville</mat-label>
+          <mat-icon matPrefix>location_city</mat-icon>
+          <input matInput formControlName="ville">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Adresse</mat-label>
+          <mat-icon matPrefix>place</mat-icon>
+          <input matInput formControlName="adresse">
+        </mat-form-field>
+      </div>
+    </div>
+
+    <!-- Section: Message -->
+    <div class="form-section">
+      <div class="section-title">
+        <mat-icon>message</mat-icon>
+        <span>Message</span>
+      </div>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Message</mat-label>
+        <textarea matInput formControlName="message" rows="4" placeholder="Décrivez votre besoin..."></textarea>
+      </mat-form-field>
+    </div>
+
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-stroked-button type="button" (click)="onCancel()">
+    <mat-icon>close</mat-icon>
+    Annuler
+  </button>
+  <button mat-flat-button color="primary" type="button" (click)="onSubmit()" [disabled]="devisForm.invalid">
+    <mat-icon>send</mat-icon>
+    Envoyer la Demande
+  </button>
+</mat-dialog-actions>

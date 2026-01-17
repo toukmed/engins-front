@@ -1,0 +1,17 @@
+<mat-toolbar class="mat-elevation-z3 navbar" color="primary">
+    <button mat-icon-button (click)="isSideNavOpen.set(!isSideNavOpen())">
+        <mat-icon>menu</mat-icon>
+    </button>
+     <button mat-icon-button class="logout-button" (click)="logout()">
+        <mat-icon>logout</mat-icon>
+    </button>
+</mat-toolbar>
+
+<mat-sidenav-container>
+  <mat-sidenav opened mode="side" [style.width]="sideNavWidth()">
+    <app-sidenav-menu [isSideNavOpen]="isSideNavOpen()"></app-sidenav-menu>
+  </mat-sidenav>
+  <mat-sidenav-content class="sidenav-content" [style.marginLeft]="sideNavWidth()">
+    <router-outlet></router-outlet>
+  </mat-sidenav-content>
+</mat-sidenav-container>

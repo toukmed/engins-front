@@ -1,0 +1,153 @@
+<div class="demands-page">
+    <!-- Header -->
+    <div class="page-header">
+        <div class="header-left">
+            <h1 class="page-title">Demandes</h1>
+            <span class="count-badge">{{ dataSource.data.length }}</span>
+        </div>
+    </div>
+
+    <!-- Status Filter -->
+    <div class="filter-bar">
+        <span class="filter-label">
+            <mat-icon class="filter-icon">filter_list</mat-icon>
+            Filtrer par statut
+        </span>
+        <div class="filter-chips">
+            <button class="filter-chip" [class.active]="selectedStatus === ''" (click)="onStatusFilter('')">
+                Tous
+            </button>
+            @for (s of statusList; track s.label) {
+                <button class="filter-chip" [class.active]="selectedStatus === s.label"
+                    [style.--chip-color]="s.color" (click)="onStatusFilter(s.label)">
+                    {{ s.label }}
+                </button>
+            }
+        </div>
+    </div>
+
+    <!-- Table -->
+    <div class="table-wrapper">
+        <table mat-table [dataSource]="dataSource" matSort>
+
+            <!-- Nom Complet -->
+            <ng-container matColumnDef="nomComplet">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Nom Complet</th>
+                <td mat-cell *matCellDef="let element">
+                    <div class="cell-primary">{{ element.nomComplet }}</div>
+                    <div class="cell-secondary">{{ element.email }}</div>
+                </td>
+            </ng-container>
+
+            <!-- Duration -->
+            <ng-container matColumnDef="duration">
+                <th mat-header-cell *matHeaderCellDef>Durée</th>
+                <td mat-cell *matCellDef="let element">
+                    <div class="duration-cell">
+                        <mat-icon class="cell-icon">calendar_today</mat-icon>
+                        <div>
+                            <div class="cell-primary">{{ getDays(element.dateFin, element.dateDebut) / (1000 * 60 * 60 * 24) }} jours</div>
+                            <div class="cell-secondary">à partir du {{ element.dateDebut | date:'dd/MM/yyyy' }}</div>
+                        </div>
+                    </div>
+                </td>
+            </ng-container>
+
+            <!-- Équipement -->
+            <ng-container matColumnDef="equipement">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Équipement</th>
+                <td mat-cell *matCellDef="let element">
+                    <span class="equip-badge">{{ element.equipementDto?.marque }}</span>
+                </td>
+            </ng-container>
+
+            <!-- Entreprise -->
+            <ng-container matColumnDef="nomEntreprise">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Entreprise</th>
+                <td mat-cell *matCellDef="let element">{{ element.nomEntreprise }}</td>
+            </ng-container>
+
+            <!-- Téléphone -->
+            <ng-container matColumnDef="telephone">
+                <th mat-header-cell *matHeaderCellDef>Téléphone</th>
+                <td mat-cell *matCellDef="let element">
+                    <span class="phone-cell">{{ element.telephone }}</span>
+                </td>
+            </ng-container>
+
+            <!-- Ville -->
+            <ng-container matColumnDef="ville">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Ville</th>
+                <td mat-cell *matCellDef="let element">
+                    <div class="location-cell">
+                        <mat-icon class="cell-icon">location_on</mat-icon>
+                        <span>{{ element.ville }}</span>
+                    </div>
+                </td>
+            </ng-container>
+
+            <!-- Message -->
+            <ng-container matColumnDef="message">
+                <th mat-header-cell *matHeaderCellDef>Message</th>
+                <td mat-cell *matCellDef="let element">
+                    <span class="message-cell" [matTooltip]="element.message" matTooltipPosition="above">
+                        {{ element.message }}
+                    </span>
+                </td>
+            </ng-container>
+
+            <!-- Statut -->
+            <ng-container matColumnDef="status">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Statut</th>
+                <td mat-cell *matCellDef="let element">
+                    <span class="status-badge" [style.background-color]="getStatusBgColor(element.status)">
+                        <span class="status-dot"></span>
+                        {{ element.status }}
+                    </span>
+                </td>
+            </ng-container>
+
+            <!-- Date Création -->
+            <ng-container matColumnDef="dateCreation">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Créé le</th>
+                <td mat-cell *matCellDef="let element">
+                    <span class="cell-secondary">{{ element.dateCreation | date:'dd/MM/yyyy' }}</span>
+                </td>
+            </ng-container>
+
+            <!-- Actions -->
+            <ng-container matColumnDef="actions">
+                <th mat-header-cell *matHeaderCellDef>Actions</th>
+                <td mat-cell *matCellDef="let element">
+                    <div class="actions-cell">
+                        <button mat-icon-button class="action-btn accept-btn"
+                            (click)="acceptDemand(element)" matTooltip="Accepter"
+                            [disabled]="element.status === 'TRAITE' || element.status === 'REFUS'">
+                            <mat-icon fontSet="material-icons-outlined">check_circle</mat-icon>
+                        </button>
+                        <button mat-icon-button class="action-btn decline-btn"
+                            (click)="declineDemand(element)" matTooltip="Refuser"
+                            [disabled]="element.status === 'TRAITE' || element.status === 'REFUS' || element.status === 'VALIDE'">
+                            <mat-icon fontSet="material-icons-outlined">cancel</mat-icon>
+                        </button>
+                    </div>
+                </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+            <!-- No data row -->
+            <tr class="no-data-row" *matNoDataRow>
+                <td [attr.colspan]="displayedColumns.length">
+                    <div class="no-data">
+                        <mat-icon>inbox</mat-icon>
+                        <span>Aucune demande trouvée</span>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+</div>

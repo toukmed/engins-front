@@ -1,0 +1,78 @@
+<div class="equipements-page">
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="header-top">
+            <div class="header-title">
+                <h1>Équipements</h1>
+                <p class="subtitle">Gérez votre flotte d'équipements</p>
+            </div>
+            <button mat-flat-button color="primary" class="add-btn" (click)="addEquipement()">
+                <mat-icon>add_circle_outline</mat-icon>
+                Ajouter un équipement
+            </button>
+        </div>
+        <mat-form-field appearance="outline" class="search-field">
+            <mat-icon matPrefix>search</mat-icon>
+            <mat-label>Rechercher par nom, type ou ville…</mat-label>
+            <input matInput (keyup)="onSearchInput($event)">
+        </mat-form-field>
+    </div>
+
+    <!-- Equipment Grid -->
+    <div class="equipement-grid">
+        @for (equipement of equipements(); track $index) {
+            <div class="eq-card">
+                <!-- Image Section -->
+                <div class="eq-card__image" (click)="viewEquipementDetails(equipement)">
+                    <img [src]="getEquipementImageUrl(equipement.imageUrl)" [alt]="equipement.marque">
+                    <span class="eq-card__badge"
+                          [class.available]="equipement.disponible"
+                          [class.unavailable]="!equipement.disponible">
+                        <span class="badge-dot"></span>
+                        {{ equipement.disponible ? 'Disponible' : 'Indisponible' }}
+                    </span>
+                </div>
+
+                <!-- Body -->
+                <div class="eq-card__body">
+                    <div class="eq-card__header">
+                        <h3 class="eq-card__title">{{ equipement.marque }}</h3>
+                        <mat-chip-set>
+                            <mat-chip class="category-chip" highlighted>{{ equipement.categorie }}</mat-chip>
+                        </mat-chip-set>
+                    </div>
+
+                    <div class="eq-card__meta">
+                        <span class="meta-item">
+                            <mat-icon>location_on</mat-icon>
+                            {{ equipement.ville }}
+                        </span>
+                    </div>
+
+                    <p class="eq-card__desc">{{ equipement.description }}</p>
+                </div>
+
+                <!-- Footer -->
+                <div class="eq-card__footer">
+                    <span class="eq-card__price">
+                        {{ equipement.prixJournalier | number:'1.0-0' }} <small>MAD/jour</small>
+                    </span>
+                    <div class="eq-card__actions">
+                        <button mat-icon-button class="action-edit" (click)="editEquipement(equipement)" aria-label="Modifier">
+                            <mat-icon>edit_outlined</mat-icon>
+                        </button>
+                        <button mat-icon-button class="action-delete" aria-label="Supprimer">
+                            <mat-icon>delete_outline</mat-icon>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        } @empty {
+            <div class="empty-state">
+                <mat-icon>inventory_2</mat-icon>
+                <h3>Aucun équipement trouvé</h3>
+                <p>Ajoutez votre premier équipement pour commencer.</p>
+            </div>
+        }
+    </div>
+</div>

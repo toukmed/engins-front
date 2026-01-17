@@ -1,0 +1,316 @@
+/* Demands Page */
+.demands-page {
+  background-color: #FAF9FD;
+  border-radius: 12px;
+  padding: 24px;
+}
+
+/* ── Header ───────────────────────────────────────────── */
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.page-title {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.count-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #e0e7ff;
+  color: #4338ca;
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: 20px;
+  padding: 2px 12px;
+  min-width: 28px;
+  height: 28px;
+}
+
+/* ── Filter Bar ───────────────────────────────────────── */
+.filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.filter-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #64748b;
+  white-space: nowrap;
+}
+
+.filter-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+}
+
+.filter-chips {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.filter-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 500;
+  border: 1.5px solid #e2e8f0;
+  background: #fff;
+  color: #475569;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    border-color: #cbd5e1;
+    background: #f8fafc;
+  }
+
+  &.active {
+    background: var(--chip-color, #4338ca);
+    border-color: var(--chip-color, #4338ca);
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  }
+}
+
+/* ── Table Wrapper ────────────────────────────────────── */
+.table-wrapper {
+  background: #fff;
+  border-radius: 12px;
+  border: 1px solid #e9ecf2;
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+}
+
+/* Header row */
+th.mat-mdc-header-cell {
+  background: #f8fafc !important;
+  color: #475569 !important;
+  font-weight: 600 !important;
+  font-size: 12px !important;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 2px solid #e9ecf2 !important;
+  padding: 14px 16px !important;
+  white-space: nowrap;
+}
+
+/* Body cells */
+td.mat-mdc-cell {
+  padding: 12px 16px !important;
+  font-size: 13.5px;
+  color: #334155;
+  border-bottom: 1px solid #f1f5f9;
+  vertical-align: middle;
+}
+
+/* Row hover */
+tr.mat-mdc-row:hover td {
+  background: #f8fafc;
+}
+
+/* ── Cell Typography ──────────────────────────────────── */
+.cell-primary {
+  font-weight: 500;
+  color: #1e293b;
+  font-size: 13.5px;
+}
+
+.cell-secondary {
+  font-size: 12px;
+  color: #94a3b8;
+  margin-top: 2px;
+}
+
+/* ── Duration Cell ────────────────────────────────────── */
+.duration-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cell-icon {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+  color: #94a3b8;
+}
+
+/* ── Equipment Badge ──────────────────────────────────── */
+.equip-badge {
+  display: inline-block;
+  background: #eff6ff;
+  color: #2563eb;
+  font-size: 12.5px;
+  font-weight: 500;
+  padding: 4px 10px;
+  border-radius: 6px;
+}
+
+/* ── Phone ────────────────────────────────────────────── */
+.phone-cell {
+  font-family: 'Roboto Mono', monospace;
+  font-size: 13px;
+  color: #475569;
+}
+
+/* ── Location Cell ────────────────────────────────────── */
+.location-cell {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* ── Message Cell (truncated) ─────────────────────────── */
+.message-cell {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 180px;
+  font-size: 13px;
+  color: #64748b;
+  cursor: default;
+}
+
+/* ── Status Badge ─────────────────────────────────────── */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #fff;
+  white-space: nowrap;
+  letter-spacing: 0.3px;
+}
+
+.status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.7);
+}
+
+/* ── Actions ──────────────────────────────────────────── */
+.actions-cell {
+  display: flex;
+  gap: 4px;
+}
+
+.action-btn {
+  width: 36px !important;
+  height: 36px !important;
+  line-height: 36px !important;
+  transition: all 0.2s ease;
+
+  mat-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+  }
+}
+
+.accept-btn {
+  mat-icon { color: #16a34a; }
+
+  &:hover:not(:disabled) {
+    background: #f0fdf4;
+  }
+
+  &:disabled mat-icon { color: #cbd5e1; }
+}
+
+.decline-btn {
+  mat-icon { color: #dc2626; }
+
+  &:hover:not(:disabled) {
+    background: #fef2f2;
+  }
+
+  &:disabled mat-icon { color: #cbd5e1; }
+}
+
+/* ── No Data ──────────────────────────────────────────── */
+.no-data {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 48px 0;
+  color: #94a3b8;
+
+  mat-icon {
+    font-size: 40px;
+    width: 40px;
+    height: 40px;
+  }
+
+  span {
+    font-size: 14px;
+  }
+}
+
+/* ── Paginator ────────────────────────────────────────── */
+mat-paginator {
+  background: transparent !important;
+  margin-top: 8px;
+}
+
+/* ── Responsive ───────────────────────────────────────── */
+@media (max-width: 1024px) {
+  .table-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  table {
+    min-width: 900px;
+  }
+}
+
+@media (max-width: 600px) {
+  .demands-page {
+    padding: 16px;
+  }
+
+  .page-title {
+    font-size: 20px;
+  }
+
+  .filter-bar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

@@ -1,0 +1,191 @@
+<!-- Loading State -->
+@if (isLoading) {
+  <div class="loading-container">
+    <mat-spinner diameter="48"></mat-spinner>
+    <p>Chargement des détails...</p>
+  </div>
+}
+
+<!-- Error State -->
+@if (!isLoading && errorMessage) {
+  <div class="error-container">
+    <mat-icon class="error-icon">error_outline</mat-icon>
+    <h3>Erreur</h3>
+    <p>{{ errorMessage }}</p>
+    <button mat-flat-button color="primary" (click)="retry()">
+      <mat-icon>refresh</mat-icon>
+      Réessayer
+    </button>
+  </div>
+}
+
+<!-- Main Content -->
+@if (!isLoading && !errorMessage && equipement) {
+  <div class="detail-page">
+
+    <!-- Breadcrumb Header -->
+    <div class="breadcrumb-bar">
+      <button mat-icon-button (click)="goBack()" matTooltip="Retour aux équipements">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+      <nav class="breadcrumb">
+        <a (click)="goBack()">Équipements</a>
+        <mat-icon class="breadcrumb-sep">chevron_right</mat-icon>
+        <span>{{ equipement.marque }} {{ equipement.model }}</span>
+      </nav>
+    </div>
+
+    <!-- Hero Section -->
+    <div class="hero-section">
+
+      <!-- Image Gallery -->
+      <div class="gallery-column">
+        <div class="main-image-wrapper">
+          <img
+            class="main-image"
+            [src]="imageSrc"
+            [alt]="equipement.marque + ' ' + equipement.model">
+        </div>
+        @if (equipmentImages.length > 1) {
+          <div class="thumbnail-strip">
+            @for (image of equipmentImages; track $index) {
+              <img
+                class="thumbnail"
+                [src]="image"
+                [class.active]="image === imageSrc"
+                (click)="setMainImage(image)"
+                [alt]="equipement.marque + ' image ' + ($index + 1)">
+            }
+          </div>
+        }
+      </div>
+
+      <!-- Info Panel -->
+      <div class="info-panel">
+        <div class="info-header">
+          <div class="title-row">
+            <h1 class="equip-title">{{ equipement.marque }}
+              <span class="equip-model">{{ equipement.model }}</span>
+            </h1>
+          </div>
+
+          <div class="badges-row">
+            <mat-chip-set>
+              <mat-chip highlighted>
+                <mat-icon matChipAvatar>category</mat-icon>
+                {{ equipement.categorie }}
+              </mat-chip>
+            </mat-chip-set>
+            <span class="status-badge" [class.available]="equipement.disponible" [class.unavailable]="!equipement.disponible">
+              <span class="status-dot"></span>
+              {{ equipement.disponible ? 'Disponible' : 'Indisponible' }}
+            </span>
+          </div>
+        </div>
+
+        <mat-divider></mat-divider>
+
+        <!-- Price -->
+        <div class="price-block">
+          <span class="price-value">{{ equipement.prixJournalier | number:'1.0-0' }}</span>
+          <span class="price-unit">MAD / jour</span>
+        </div>
+
+        <mat-divider></mat-divider>
+
+        <!-- Key Info -->
+        <div class="key-info">
+          <div class="info-item">
+            <mat-icon>location_on</mat-icon>
+            <div>
+              <span class="info-label">Ville</span>
+              <span class="info-value">{{ equipement.ville }}</span>
+            </div>
+          </div>
+          <div class="info-item">
+            <mat-icon>confirmation_number</mat-icon>
+            <div>
+              <span class="info-label">Matricule</span>
+              <span class="info-value">{{ equipement.matricule }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Description -->
+        @if (equipement.description) {
+          <p class="description-text">{{ equipement.description }}</p>
+        }
+
+        <!-- Action Buttons -->
+        <div class="action-bar">
+          <button mat-flat-button class="cta-button" [disabled]="!equipement.disponible" (click)="demanderDevis()">
+            <mat-icon>receipt_long</mat-icon>
+            Demander un devis
+          </button>
+          <button mat-stroked-button (click)="editEquipement()" matTooltip="Modifier l'équipement">
+            <mat-icon>edit</mat-icon>
+            Modifier
+          </button>
+          <button mat-icon-button (click)="shareEquipement()" matTooltip="Copier le lien">
+            <mat-icon>share</mat-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tabs Section -->
+    <mat-tab-group [(selectedIndex)]="activeTabIndex" class="specs-tabs" animationDuration="200ms">
+
+      <!-- Technical Specs Tab -->
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <mat-icon>settings</mat-icon>
+          <span>Spécifications techniques</span>
+        </ng-template>
+        <div class="specs-grid">
+          @for (spec of technicalSpecs; track $index) {
+            <div class="spec-card">
+              <mat-icon class="spec-icon">{{ spec.icon }}</mat-icon>
+              <div class="spec-content">
+                <span class="spec-label">{{ spec.label }}</span>
+                <span class="spec-value">{{ spec.value }}</span>
+              </div>
+            </div>
+          }
+        </div>
+      </mat-tab>
+
+      <!-- Physical Specs Tab -->
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <mat-icon>straighten</mat-icon>
+          <span>Caractéristiques physiques</span>
+        </ng-template>
+        <div class="specs-grid">
+          @for (spec of physicalSpecs; track $index) {
+            <div class="spec-card">
+              <mat-icon class="spec-icon">{{ spec.icon }}</mat-icon>
+              <div class="spec-content">
+                <span class="spec-label">{{ spec.label }}</span>
+                <span class="spec-value">{{ spec.value }}</span>
+              </div>
+            </div>
+          }
+        </div>
+      </mat-tab>
+
+      <!-- Full Description Tab -->
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <mat-icon>description</mat-icon>
+          <span>Description</span>
+        </ng-template>
+        <div class="description-tab-content">
+          <p>{{ equipement.description || 'Aucune description disponible pour cet équipement.' }}</p>
+        </div>
+      </mat-tab>
+
+    </mat-tab-group>
+
+  </div>
+}
